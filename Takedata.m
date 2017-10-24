@@ -35,7 +35,10 @@ try
     LabJack.LJM.eReadNames(handle, numFrames, aNames, aValues, 0);
 
     disp('eReadNames results:')
-    y=aValues(1);
+    y=zeros(3,1);
+    for i = 1:3
+        y(i) = aValues(i);
+    end
 %     for i=1:numFrames,
 %         disp(['  Name: ' char(aNames(i)) ', value: ' num2str(aValues(i))])
 %     end

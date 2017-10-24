@@ -55,23 +55,19 @@ try
     % AIN3_EF_CONFIG_E = 0.0       // offset for CJC reading
    
     %% ASSIGNS VALUES TO THE NAMES THAT WERE PREVIOUSLY SPECIFIED
-    aV = zeros(7,3);
-    for i = 1:3
-%         aValues = NET.createArray('System.Double', numInputs);
-        aV(1,i) = 22;     %Specifies the type of Thermocouple(Type K)
-        aV(2,i) = 60052;  %Address of the CJC on the DAQ
-        aV(3,i) = 1.0;    %Slope for CJC reading
-        aV(4,i) = 0.0;    %Offset for CJC reading
-        aV(5,i) = 0.1;
-        aV(6,i) = 12;
-        aV(7,i) = i*2-1;
-        aV(8,i) = 1;
-%         aV(:,i) = aValues(:);
+    aValues = NET.createArray('System.Double', numInputs);
+    for i = 0:2
+        aValues(1+(i*8)) = 22;     %Specifies the type of Thermocouple(Type K)
+        aValues(2+(i*8)) = 60052;  %Address of the CJC on the DAQ
+        aValues(3+(i*8)) = 1.0;    %Slope for CJC reading
+        aValues(4+(i*8)) = 0.0;    %Offset for CJC reading
+        aValues(5+(i*8)) = 0.1;
+        aValues(6+(i*8)) = 10;
+        aValues(7+(i*8)) = i*2+1;
+        aValues(8+(i*8)) = 1;
     end
-%     for i = 1:3
-%         LabJack.LJM.eWriteNames(handle, numInputs, aN(:,i), aV(:,i), 0);
-%     end
-    LabJack.LJM.eWriteNames(handle, numInputs, aNames, aV, 0);
+
+    LabJack.LJM.eWriteNames(handle, numInputs, aNames, aValues, 0);
 %     disp('eWriteNames:');
 %     for i=1:numInputs,
 %         disp(['  Name: ' char(aNames(i)) ', value: ' num2str(aV(i))])
@@ -90,7 +86,7 @@ try
 catch e
     showErrorMessage(e)
 end
-
+% 
 % try
 %     % Close handle
 %     LabJack.LJM.Close(handle);

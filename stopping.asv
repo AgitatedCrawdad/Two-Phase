@@ -11,8 +11,8 @@ KEY_IS_PRESSED = 0;
 
 gcf
 
-h = animatedline('Color','r');
-h2 = animatedline;
+h = animatedline;
+h2
 ax = gca;
 ax.YGrid = 'on';
 startTime = datetime('now');
@@ -23,7 +23,7 @@ while ~KEY_IS_PRESSED
       i = i+1;
       t =  datetime('now') - startTime;
       addpoints(h,datenum(t),y(1))
-      addpoints(h2,datenum(t),y(2))
+      %addpoints(h,datenum(t),y(2))
       ax.XLim = datenum([t-seconds(10) t]);
       datetick('x','keeplimits')
       drawnow
@@ -39,17 +39,14 @@ try
 catch e
     showErrorMessage(e)
 end
-
 [timeLogs,tempLogs] = getpoints(h);
-[timeLogs,tempLogs2] = getpoints(h2);
 assignin('base','time',timeLogs);
 assignin('base','temp',tempLogs);
-assignin('base','temp2',tempLogs)
 timeSecs = (timeLogs-timeLogs(1))*24*3600;
 figure
-plot(timeSecs,tempLogs,timeSecs,tempLogs2)
+plot(timeSecs,tempLogs)
 xlabel('Elapsed time (sec)')
-ylabel('Temperature (\circC)')
+ylabel('Temperature (\circF)')
 disp('loop ended')
 
 function myKeyPressFcn(hObject, event)
