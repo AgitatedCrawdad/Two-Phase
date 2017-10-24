@@ -1,6 +1,6 @@
-function y=Takedata()
-import DAQConfig
-handle = DAQConfig();
+function y=Takedata(handle)
+% import DAQConfig
+% handle = DAQConfig();
 %
 % Demonstrates how to use the eReadNames (LJM_eReadNames) function using .NET.
 %
@@ -44,10 +44,10 @@ catch e
     showErrorMessage(e)
 end
 
-try
-    % Close handle
-    LabJack.LJM.Close(handle);
-catch e
-    showErrorMessage(e)
-end
+% try
+%     % Close handle
+%     LabJack.LJM.Close(handle);
+% catch e
+%     showErrorMessage(e)
+% end
 end

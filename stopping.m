@@ -1,6 +1,8 @@
 function stopping() 
 import Takedata
-y = Takedata();
+import DAQConfig
+handle = DAQConfig();
+y = Takedata(handle);
 
 global KEY_IS_PRESSED
 global t 
@@ -25,9 +27,15 @@ while ~KEY_IS_PRESSED
       drawnow
 
       disp('looping...')
-      pause(0.1)
-      y = Takedata();
+      pause(0.2)
+      y = Takedata(handle);
 
+end
+try
+    % Close handle
+    LabJack.LJM.Close(handle);
+catch e
+    showErrorMessage(e)
 end
 [timeLogs,tempLogs] = getpoints(h);
 assignin('base','time',timeLogs);

@@ -6,7 +6,7 @@ function handle = DAQConfig()
 % NumChannels=length(Ain);
 
 clc %Clear the MATLAB command window
-clear %Clear the MATLAB variables
+%clear %Clear the MATLAB variables
 
 ljmAsm = NET.addAssembly('LabJack.LJM'); %Make the LJM .NET assembly visible in MATLAB
 
@@ -23,28 +23,21 @@ try
     
     %Setup and call eWriteNames to write values.
   %% SPECIFIES WHAT NAMES WILL HAVE VALUES ASSIGNED TO THEM
-    numInputs = 8; %ADJUST ACCORDING TO NUMBER OF ADDRESSING WRITING
+    numInputs = 24; %ADJUST ACCORDING TO NUMBER OF ADDRESSING WRITING
 %     aNames = NET.createArray('System.String', numInputs);
     aNames = NET.createArray('System.String', numInputs);
-    j1 = '0';
-        aNames(1) = ['AIN' j1 '_EF_INDEX'];    %Specifies the type of thermocouple to be used
-        aNames(2) = ['AIN' j1 '_EF_CONFIG_B']; %Specifies that the CJC will be used from the DAQ
-        aNames(3) = ['AIN' j1 '_EF_CONFIG_D']; %slope for CJC reading
-        aNames(4) = ['AIN' j1 '_EF_CONFIG_E']; %offset for CJC reading
-        aNames(5) = ['AIN' j1 '_RANGE'];
-        aNames(6) = ['AIN' j1 '_RESOLUTION_INDEX'];
-        aNames(7) = ['AIN' j1 '_NEGATIVE_CH'];
-        aNames(8) = ['AIN' j1 '_EF_CONFIG_A'];
-%     for j=0:2:4 
-%         j1 = num2str(j);
-%         aN(1,(j/2)+1).Ain = ['AIN' j1 '_EF_INDEX'];    %Specifies the type of thermocouple to be used
-%         aN(2,(j/2)+1).Ain = ['AIN' j1 '_EF_CONFIG_B']; %Specifies that the CJC will be used from the DAQ
-%         aN(3,(j/2)+1).Ain = ['AIN' j1 '_EF_CONFIG_D']; %slope for CJC reading
-%         aN(4,(j/2)+1).Ain = ['AIN' j1 '_EF_CONFIG_E']; %offset for CJC reading
-%         aN(5,(j/2)+1).Ain = ['AIN' j1 '_RANGE'];
-%         aN(6,(j/2)+1).Ain = ['AIN' j1 '_RESOLUTION_INDEX'];
-%         aN(7,(j/2)+1).Ain = ['AIN' j1 '_NEGATIVE_CH'];
-%     end
+    for i=0:2:4
+        j = num2str(i);
+        aNames(1+((i/2)*8)) = ['AIN' j '_EF_INDEX'];    %Specifies the type of thermocouple to be used
+        aNames(2+((i/2)*8)) = ['AIN' j '_EF_CONFIG_B']; %Specifies that the CJC will be used from the DAQ
+        aNames(3+((i/2)*8)) = ['AIN' j '_EF_CONFIG_D']; %slope for CJC reading
+        aNames(4+((i/2)*8)) = ['AIN' j '_EF_CONFIG_E']; %offset for CJC reading
+        aNames(5+((i/2)*8)) = ['AIN' j '_RANGE'];
+        aNames(6+((i/2)*8)) = ['AIN' j '_RESOLUTION_INDEX'];
+        aNames(7+((i/2)*8)) = ['AIN' j '_NEGATIVE_CH'];
+        aNames(8+((i/2)*8)) = ['AIN' j '_EF_CONFIG_A'];
+    end
+
 
     % EF INDEX VALUES FOR THERMOCOUPLES
     % 20: Thermocouple type E
@@ -70,7 +63,7 @@ try
         aV(3,i) = 1.0;    %Slope for CJC reading
         aV(4,i) = 0.0;    %Offset for CJC reading
         aV(5,i) = 0.1;
-        aV(6,i) = 10;
+        aV(6,i) = 12;
         aV(7,i) = i*2-1;
         aV(8,i) = 1;
 %         aV(:,i) = aValues(:);
@@ -78,7 +71,7 @@ try
 %     for i = 1:3
 %         LabJack.LJM.eWriteNames(handle, numInputs, aN(:,i), aV(:,i), 0);
 %     end
-    LabJack.LJM.eWriteNames(handle, numInputs, aNames, aV(:,1), 0);
+    LabJack.LJM.eWriteNames(handle, numInputs, aNames, aV, 0);
 %     disp('eWriteNames:');
 %     for i=1:numInputs,
 %         disp(['  Name: ' char(aNames(i)) ', value: ' num2str(aV(i))])
