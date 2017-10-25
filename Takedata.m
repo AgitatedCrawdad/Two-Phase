@@ -25,24 +25,24 @@ try
 %     showDeviceInfo(handle);
 
     %Setup and call eReadNames to read values.
-    numFrames = 3;
+    numFrames = 7;
     aNames = NET.createArray('System.String', numFrames);
     aNames(1) = 'AIN0_EF_READ_A';
     aNames(2) = 'AIN2_EF_READ_A';
     aNames(3) = 'AIN4_EF_READ_A';
+    aNames(4) = 'AIN6';
+    aNames(5) = 'AIN8';
+    aNames(6) = 'AIN10';
+    aNames(7) = 'AIN12_EF_READ_A';
 %     aNames(4) = 'RTC_TIME_S';
     aValues = NET.createArray('System.Double', numFrames);
     LabJack.LJM.eReadNames(handle, numFrames, aNames, aValues, 0);
 
-    disp('eReadNames results:')
-    y=zeros(3,1);
-    for i = 1:3
+    y=zeros(numFrames,1);
+    for i = 1:numFrames
         y(i) = aValues(i);
     end
-%     for i=1:numFrames,
-%         disp(['  Name: ' char(aNames(i)) ', value: ' num2str(aValues(i))])
-%     end
-%     pause(2.5)
+
 catch e
     showErrorMessage(e)
 end

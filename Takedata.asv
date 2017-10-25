@@ -1,5 +1,6 @@
-import DAQConfig
-DAQConfig()
+function y=Takedata(handle)
+% import DAQConfig
+% handle = DAQConfig();
 %
 % Demonstrates how to use the eReadNames (LJM_eReadNames) function using .NET.
 %
@@ -21,29 +22,36 @@ try
     %[ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
     %[ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
 
-    showDeviceInfo(handle);
+%     showDeviceInfo(handle);
 
     %Setup and call eReadNames to read values.
-    numFrames = 3;
+    numFrames = 7;
     aNames = NET.createArray('System.String', numFrames);
-    aNames(1) = 'AIN0';
-    aNames(2) = 'AIN2';
-    aNames(3) = 'AIN4';
+    aNames(1) = 'AIN0_EF_READ_A';
+    aNames(2) = 'AIN2_EF_READ_A';
+    aNames(3) = 'AIN4_EF_READ_A';
+    aNames(4) = 'AIN6';
+    aNames(5) = 'AIN8';
+    aNames(6) = 'AIN10';
+    aNames(7) = 'AIN12_EF_READ_A';
+%     aNames(4) = 'RTC_TIME_S';
     aValues = NET.createArray('System.Double', numFrames);
     LabJack.LJM.eReadNames(handle, numFrames, aNames, aValues, 0);
 
-    disp('eReadNames results:')
-    
-    for i=1:numFrames,
-        disp(['  Name: ' char(aNames(i)) ', value: ' num2str(aValues(i))])
+%     disp('eReadNames results:')
+    y=zeros(numFrames,1);
+    for i = 1:numFrames
+        y(i) = aValues(i);
     end
+
 catch e
     showErrorMessage(e)
 end
 
-try
-    % Close handle
-    LabJack.LJM.Close(handle);
-catch e
-    showErrorMessage(e)
+% try
+%     % Close handle
+%     LabJack.LJM.Close(handle);
+% catch e
+%     showErrorMessage(e)
+% end
 end

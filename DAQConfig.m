@@ -1,9 +1,4 @@
 function handle = DAQConfig()
-% %function [ output_args ] = WriteDAQ( ConfigFile )
-% %WriteDAQ Reads analog inputs from DAQ 1 time
-% %   Detailed explanation goes here
-% load(ConfigFile);
-% NumChannels=length(Ain);
 
 clc %Clear the MATLAB command window
 %clear %Clear the MATLAB variables
@@ -18,27 +13,43 @@ handle = 0;
 try
     %Open first found LabJack
     [ljmError, handle] = LabJack.LJM.OpenS('T7', 'ETHERNET', '470013205', handle);
-    %[ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
 %     showDeviceInfo(handle);
     
     %Setup and call eWriteNames to write values.
   %% SPECIFIES WHAT NAMES WILL HAVE VALUES ASSIGNED TO THEM
-    numInputs = 24; %ADJUST ACCORDING TO NUMBER OF ADDRESSING WRITING
+    numInputs = 44; %ADJUST ACCORDING TO NUMBER OF ADDRESSING WRITING
 %     aNames = NET.createArray('System.String', numInputs);
     aNames = NET.createArray('System.String', numInputs);
-    for i=0:2:4
+    for i=0:2:4 %%This loop sets the names for 3 of thermocouples
         j = num2str(i);
         aNames(1+((i/2)*8)) = ['AIN' j '_EF_INDEX'];    %Specifies the type of thermocouple to be used
         aNames(2+((i/2)*8)) = ['AIN' j '_EF_CONFIG_B']; %Specifies that the CJC will be used from the DAQ
         aNames(3+((i/2)*8)) = ['AIN' j '_EF_CONFIG_D']; %slope for CJC reading
         aNames(4+((i/2)*8)) = ['AIN' j '_EF_CONFIG_E']; %offset for CJC reading
-        aNames(5+((i/2)*8)) = ['AIN' j '_RANGE'];
-        aNames(6+((i/2)*8)) = ['AIN' j '_RESOLUTION_INDEX'];
-        aNames(7+((i/2)*8)) = ['AIN' j '_NEGATIVE_CH'];
-        aNames(8+((i/2)*8)) = ['AIN' j '_EF_CONFIG_A'];
+        aNames(5+((i/2)*8)) = ['AIN' j '_RANGE'];       %Range of voltage for TC
+        aNames(6+((i/2)*8)) = ['AIN' j '_RESOLUTION_INDEX']; 
+        aNames(7+((i/2)*8)) = ['AIN' j '_NEGATIVE_CH']; %Specifies negative channel (=AINX+1)
+        aNames(8+((i/2)*8)) = ['AIN' j '_EF_CONFIG_A']; %Reads temp in Celsius
     end
-
-
+    
+    for i=6:2:10 %%This loop sets the names for the Pressure Transducers
+        k = num2str(i);
+        aNames(25+(((i-6)/2)*4)) = ['AIN' k '_EF_INDEX'];
+        aNames(26+(((i-6)/2)*4)) = ['AIN' k '_NEGATIVE_CH'];
+        aNames(27+(((i-6)/2)*4)) = ['AIN' k '_RESOLUTION_INDEX'];
+        aNames(28+(((i-6)/2)*4)) = ['AIN' k '_RANGE'];
+    end
+    
+    j = num2str(12);
+    aNames(37) = ['AIN' j '_EF_INDEX'];    %Specifies the type of thermocouple to be used
+    aNames(38) = ['AIN' j '_EF_CONFIG_B']; %Specifies that the CJC will be used from the DAQ
+    aNames(39) = ['AIN' j '_EF_CONFIG_D']; %slope for CJC reading
+    aNames(40) = ['AIN' j '_EF_CONFIG_E']; %offset for CJC reading
+    aNames(41) = ['AIN' j '_RANGE'];       %Range of voltage for TC
+    aNames(42) = ['AIN' j '_RESOLUTION_INDEX']; 
+    aNames(43) = ['AIN' j '_NEGATIVE_CH']; %Specifies negative channel (=AINX+1)
+    aNames(44) = ['AIN' j '_EF_CONFIG_A']; %Reads temp in Celsius
+        
     % EF INDEX VALUES FOR THERMOCOUPLES
     % 20: Thermocouple type E
     % 21: Thermocouple type J
@@ -61,27 +72,31 @@ try
         aValues(2+(i*8)) = 60052;  %Address of the CJC on the DAQ
         aValues(3+(i*8)) = 1.0;    %Slope for CJC reading
         aValues(4+(i*8)) = 0.0;    %Offset for CJC reading
-        aValues(5+(i*8)) = 0.1;
-        aValues(6+(i*8)) = 10;
-        aValues(7+(i*8)) = i*2+1;
-        aValues(8+(i*8)) = 1;
+        aValues(5+(i*8)) = 0.1;    %Range of voltage for TC
+        aValues(6+(i*8)) = 10;     %Resolution index
+        aValues(7+(i*8)) = i*2+1;  %Negative Channel
+        aValues(8+(i*8)) = 1;      %Read in Celsius
     end
+    
+    %Pressure Transducers
+    for i = 0:2
+        aValues(25+(i*4)) = 0;        %Index (0=disabled EF)
+        aValues(26+(i*4)) = (i*2)+7;  %Negative channel
+        aValues(27+(i*4)) = 12;       %Resolution index
+        aValues(28+(i*4)) = 10;       %Voltage range
+    end
+    
+    %Thermocouple at the end of the heater
+    aValues(37) = 22;     %Specifies the type of Thermocouple(Type K)
+    aValues(38) = 60052;  %Address of the CJC on the DAQ
+    aValues(39) = 1.0;    %Slope for CJC reading
+    aValues(40) = 0.0;    %Offset for CJC reading
+    aValues(41) = 0.1;    %Range of voltage for TC
+    aValues(42) = 10;     %Resolution index
+    aValues(43) = 13;     %Negative Channel
+    aValues(44) = 1;      %Read in Celsius
 
     LabJack.LJM.eWriteNames(handle, numInputs, aNames, aValues, 0);
-%     disp('eWriteNames:');
-%     for i=1:numInputs,
-%         disp(['  Name: ' char(aNames(i)) ', value: ' num2str(aV(i))])
-%     end
-%     
-    aValues = NET.createArray('System.Double', numInputs);
-    
-    AIN = NET.createArray('System.String', numInputs);
-    AIN(1) = 'AIN0_EF_READ_A';
-    LabJack.LJM.eReadNames(handle, 1, AIN, aValues, 0);
-%     disp(['  Name: ' char(AIN(1)) ', value: ' num2str(aValues(1))])
-%     for i=1:numInputs,
-%         disp(['  Name: ' char(aNames(i)) ', value: ' num2str(aValues(i))])
-%     end
 
 catch e
     showErrorMessage(e)
