@@ -3,7 +3,7 @@
 %
 % support@labjack.com
 %
-
+addpath('R:\Franken\LABJACK\MATLAB_LJM\Examples')  
 clc %Clear the MATLAB command window
 %clear %Clear the MATLAB variables
 

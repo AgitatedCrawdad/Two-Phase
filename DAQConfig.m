@@ -17,7 +17,7 @@ try
     
     %Setup and call eWriteNames to write values.
   %% SPECIFIES WHAT NAMES WILL HAVE VALUES ASSIGNED TO THEM
-    numInputs = 44; %ADJUST ACCORDING TO NUMBER OF ADDRESSING WRITING
+    numInputs = 47; %ADJUST ACCORDING TO NUMBER OF ADDRESSING WRITING
 %     aNames = NET.createArray('System.String', numInputs);
     aNames = NET.createArray('System.String', numInputs);
     for i=0:2:4 %%This loop sets the names for 3 of thermocouples
@@ -49,7 +49,13 @@ try
     aNames(42) = ['AIN' j '_RESOLUTION_INDEX']; 
     aNames(43) = ['AIN' j '_NEGATIVE_CH']; %Specifies negative channel (=AINX+1)
     aNames(44) = ['AIN' j '_EF_CONFIG_A']; %Reads temp in Celsius
-        
+    
+    
+    aNames(45) = 'DIO0_EF_INDEX';
+    aNames(46) = 'DIO_EF_CLOCK0_ENABLE';
+    aNames(47) = 'DIO0_EF_ENABLE';
+    
+    
     % EF INDEX VALUES FOR THERMOCOUPLES
     % 20: Thermocouple type E
     % 21: Thermocouple type J
@@ -95,6 +101,14 @@ try
     aValues(42) = 10;     %Resolution index
     aValues(43) = 13;     %Negative Channel
     aValues(44) = 1;      %Read in Celsius
+    
+    
+    aValues(45) = 3;  %Select rising or falling edges (3 or 4)
+    aValues(46) = 1;  %Select Clock Source
+    aValues(47) = 0;  %Turn on DIO_EF
+    LabJack.LJM.eWriteNames(handle, numInputs, aNames, aValues, 0);
+
+    aValues(47) = 1;  %Turn on DIO_EF
 
     LabJack.LJM.eWriteNames(handle, numInputs, aNames, aValues, 0);
 
