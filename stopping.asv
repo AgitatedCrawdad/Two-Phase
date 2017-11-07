@@ -6,15 +6,24 @@ handle = DAQConfig();
 y = Takedata(handle);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-trial = 'Trial_55C_1'; 
+trial = 'Trial_55C_1';
+
+check = horzcat(trial,'.mat');
+if exist(check)~=0
+    errmsg = input('MAKE SURE YOU ARE NOT OVERWRITTING DATA (enter "y" if you think you are, or "n" if not):');
+    if errmsg =='y'
+       error('You may have successfully prevented data overwrite, congratulations') 
+    end
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%
-global KEY_IS_PRESSED
-%global t 
+global KEY_IS_PRESSED %Global variable used to detect button press
+
 
 KEY_IS_PRESSED = 0;
 
+%%%%%%%%%%%%%%%%%%%%THESE LINES CREATE THE LIVE DATA PLOT%%%%%%%%%%%%%%%%%%
 gcf;
 h = gcf;
 T1L = animatedline('Color','r');
@@ -29,8 +38,10 @@ ax = gca;
 ax.YGrid = 'on';
 startTime = datetime('now');
 set(gcf, 'KeyPressFcn', @myKeyPressFcn)
-
 legend('TC1','TC2','TC3','TC4','P1','P2','P3','M','Location','northwest');
+%%%%%%%%%%%%%%%%%%%%THESE LINES CREATE THE LIVE DATA PLOT%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%THESE LINES PLOT THE LIVE DATA %%%%%%%%%%%%%%%%%%%%%%%%
 i = 0;
 while ~KEY_IS_PRESSED 
       i = i + 1;
@@ -48,6 +59,7 @@ while ~KEY_IS_PRESSED
       
       drawnow
       %%
+      %%%%THIS SECTION OF CODE PRINTS OUT THE DATA TO THE CONSOLE
       if i ==1 || mod(i,14)==0
           show1 = ['Time  |',' T1 |',' T2 |',' T3 |',' T4 |','  P1 |','  P2 |','  P3 |',' M'];
           disp(show1);
@@ -58,16 +70,20 @@ while ~KEY_IS_PRESSED
       disp(show3);
       %%
       pause(0.1)
-      y = Takedata(handle);
+      y = Takedata(handle); %%%GRABS THE DATA AND PUTS IT INTO VARIABLE Y
 end
+%%%%%%%%%%%%%%%%%%%%THESE LINES PLOT THE LIVE DATA %%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%THESE LINES CLOSE OUT OF LABJACK%%%%%%%%%%%%%%%%%%%%%%%
 try
     % Close handle
     LabJack.LJM.Close(handle);
 catch e
     showErrorMessage(e)
 end
+%%%%%%%%%%%%%%%%%%%%THESE LINES CLOSE OUT OF LABJACK%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%THESE LINES SAVE DATA TO WORKSPACE%%%%%%%%%%%%%%%%%%%%%
 [timeLogs,tempLogs1] = getpoints(T1L);
 [timeLogs,tempLogs2] = getpoints(T2L);
 [timeLogs,tempLogs3] = getpoints(T3L);
@@ -99,36 +115,80 @@ M = MLogs;
 timeSecs = (timeLogs-timeLogs(1))*24*3600;
 assignin('base','timeSecs',timeSecs)
 
-
-
-
 Data = horzcat(timeSecs.',T1.',T2.',T3.',T4.',P1.',P2.',P3.',M.'); %.' transposed the vector, horzcat concatenates to a single matrix
 assignin('base',trial,Data);
+%%%%%%%%%%%%%%%%%%%%THESE LINES SAVE DATA TO WORKSPACE%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%THESE LINES SAVE DATA TO WORKSPACE/ERROR CHECK%%%%%%%%%%%%%%%%%%%%%
 check = horzcat(trial,'.mat');
-
-
-t = 1;
-variableInfo = whos('-file',check);
-while t==1
+if exist(check)==0
     newName = input('Voltage of run, Enter as V# (i.e for 100V run enter V100):', 's');
-    for i=1:length(variableInfo)
-        if strcmp(newName,variableInfo(i,1).name)
-            disp('Trial run has already been entered')
-        else    
-            t = 0;
+    TF = isstrprop(newName,'digit');
+    k = 1;
+    if TF(1) == 1;
+        while k ==1
+            newName = input('Voltage of run, Enter as V# (i.e for 100V run enter V100):', 's');
+            TF = isstrprop(newName,'digit');
+            if TF(1) == 0;
+                k = 0;
+            end
         end
     end
-end
-S.(newName) = Data;
-
-
-if exist(check)>=1
-    save(trial, '-struct', 'S','-append')
-else
+    S.(newName) = Data;
     save(trial, '-struct', 'S')
-end
+    
+else
+        
+    variableInfo = whos('-file',check);
+    newName = input('Voltage of run, Enter as V# (i.e for 100V run enter V100):', 's');
+    TF = isstrprop(newName,'digit');
+    k =1;
+    if TF(1) == 1;
+        while k ==1
+            newName = input('Voltage of run, Enter as V# (i.e for 100V run enter V100):', 's');
+            TF = isstrprop(newName,'digit');
+            if TF(1) == 0;
+                k = 0;
+            end
+        end
+    end
+    
+    t = 1;
+    j = 0;
+    k = 1;
+    while t==1
+        for i=1:length(variableInfo)
+            if strcmp(newName,variableInfo(i,1).name)
+                j = j+1;
+                disp('Trial run has already been entered')
+                newName = input('Voltage of run, Enter as V# (i.e for 100V run enter V100):', 's');
+                TF = isstrprop(newName,'digit');
+                if TF(1) == 1;
+                    while k ==1
+                        newName = input('Voltage of run, Enter as V# (i.e for 100V run enter V100):', 's');
+                        TF = isstrprop(newName,'digit');
+                        if TF(1) == 0;
+                            k = 0;
+                        end
+                    end
+                end
+            end
+        end
+        if j == 0
+            t = 0;
+        end
+        j = 0;
+    end
+    S.(newName) = Data;
 
+
+    if exist(check)>=1
+        save(trial, '-struct', 'S','-append')
+    else
+        save(trial, '-struct', 'S')
+    end
+end
+%%%%%%%%%%%%%%%%%%%%THESE LINES SAVE DATA TO WORKSPACE/ERROR CHECK%%%%%%%%%%%%%%%%%%%%%
 
 % save(trial,'Data')
 
