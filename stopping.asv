@@ -6,16 +6,17 @@ handle = DAQConfig();
 y = Takedata(handle);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-trial = 'Trial_55C_1';
+trial = 'Trial_55C_1'; %%KEEP FORMATTING I.E ('Trial_SubcooledTempC_Trial#')
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 check = horzcat(trial,'.mat');
 if exist(check)~=0
-    errmsg = input('MAKE SURE YOU ARE NOT OVERWRITTING DATA (enter "y" if you think you are, or "n" if not):');
+    errmsg = input('MAKE SURE YOU ARE NOT OVERWRITTING DATA (LOOK AT LINE 9 & CURRENT FOLDER) (enter "y" if you think you are, or "n" if not):','s');
     if errmsg =='y'
        error('You may have successfully prevented data overwrite, congratulations') 
     end
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %%
 global KEY_IS_PRESSED %Global variable used to detect button press
@@ -122,36 +123,39 @@ assignin('base',trial,Data);
 %%%%%%%%%%%%%%%%%%%%THESE LINES SAVE DATA TO WORKSPACE/ERROR CHECK%%%%%%%%%%%%%%%%%%%%%
 check = horzcat(trial,'.mat');
 if exist(check)==0
-    newName = input('Voltage of run, Enter as V# (i.e for 100V run enter V100):', 's');
-    TF = isstrprop(newName,'digit');
-    k = 1;
-    if TF(1) == 1;
-        while k ==1
-            newName = input('Voltage of run, Enter as V# (i.e for 100V run enter V100):', 's');
-            TF = isstrprop(newName,'digit');
-            if TF(1) == 0;
-                k = 0;
-            end
-        end
-    end
+    
+%     newName = input('Voltage of run, Enter as V### (i.e for 100V run enter V100):', 's');
+%     TF = isstrprop(newName,'digit');
+%     k = 1;
+%     if TF(1) == 1; %Makes sure that the variable doesn't begin with a digit
+%         while k ==1
+%             newName = input('Voltage of run, Enter as V### (i.e for 100V run enter V100):', 's');
+%             TF = isstrprop(newName,'digit');
+%             if TF(1) == 0;
+%                 k = 0;
+%             end
+%         end
+%     end
+    newName = varcheck();
     S.(newName) = Data;
     save(trial, '-struct', 'S')
     
 else
         
     variableInfo = whos('-file',check);
-    newName = input('Voltage of run, Enter as V# (i.e for 100V run enter V100):', 's');
-    TF = isstrprop(newName,'digit');
-    k =1;
-    if TF(1) == 1;
-        while k ==1
-            newName = input('Voltage of run, Enter as V# (i.e for 100V run enter V100):', 's');
-            TF = isstrprop(newName,'digit');
-            if TF(1) == 0;
-                k = 0;
-            end
-        end
-    end
+%     newName = input('Voltage of run, Enter as V### (i.e for 100V run enter V100):', 's');
+%     TF = isstrprop(newName,'digit');
+%     k =1;
+%     if TF(1) == 1;
+%         while k ==1
+%             newName = input('Voltage of run, Enter as V### (i.e for 100V run enter V100):', 's');
+%             TF = isstrprop(newName,'digit');
+%             if TF(1) == 0;
+%                 k = 0;
+%             end
+%         end
+%     end
+    newName = varcheck();
     
     t = 1;
     j = 0;
@@ -161,17 +165,18 @@ else
             if strcmp(newName,variableInfo(i,1).name)
                 j = j+1;
                 disp('Trial run has already been entered')
-                newName = input('Voltage of run, Enter as V# (i.e for 100V run enter V100):', 's');
-                TF = isstrprop(newName,'digit');
-                if TF(1) == 1;
-                    while k ==1
-                        newName = input('Voltage of run, Enter as V# (i.e for 100V run enter V100):', 's');
-                        TF = isstrprop(newName,'digit');
-                        if TF(1) == 0;
-                            k = 0;
-                        end
-                    end
-                end
+                newName = varcheck()
+%                 newName = input('Voltage of run, Enter as V### (i.e for 100V run enter V100):', 's');
+%                 TF = isstrprop(newName,'digit');
+%                 if TF(1) == 1;
+%                     while k ==1
+%                         newName = input('Voltage of run, Enter as V### (i.e for 100V run enter V100):', 's');
+%                         TF = isstrprop(newName,'digit');
+%                         if TF(1) == 0;
+%                             k = 0;
+%                         end
+%                     end
+%                 end
             end
         end
         if j == 0

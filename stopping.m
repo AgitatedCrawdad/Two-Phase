@@ -2,20 +2,22 @@ function stopping()
 import Takedata
 import DAQConfig
 import Fix              %Type "Fix" in the Command Window if stopping function errors out
+import varcheck
 handle = DAQConfig();
 y = Takedata(handle);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-trial = 'Trial_55C_1';
+trial = 'Trial_55C_1'; %%KEEP FORMATTING I.E ('Trial_SubcooledTempC_Trial#')
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 check = horzcat(trial,'.mat');
 if exist(check)~=0
-    errmsg = input('MAKE SURE YOU ARE NOT OVERWRITTING DATA (enter "y" if you think you are, or "n" if not):','s');
+    errmsg = input('MAKE SURE YOU ARE NOT OVERWRITTING DATA (LOOK AT LINE 9 & CURRENT FOLDER) (enter "y" if you think you are, or "n" if not):','s');
     if errmsg =='y'
        error('You may have successfully prevented data overwrite, congratulations') 
     end
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %%
 global KEY_IS_PRESSED %Global variable used to detect button press
@@ -26,7 +28,7 @@ KEY_IS_PRESSED = 0;
 %%%%%%%%%%%%%%%%%%%%THESE LINES CREATE THE LIVE DATA PLOT%%%%%%%%%%%%%%%%%%
 gcf;
 h = gcf;
-T1L = animatedline('Color','r');
+T1L = animatedline('Color','r'); 
 T2L = animatedline('Color','r','LineStyle','--');
 T3L = animatedline('Color','r','LineStyle',':');
 T4L = animatedline('Color','k');
@@ -122,56 +124,21 @@ assignin('base',trial,Data);
 %%%%%%%%%%%%%%%%%%%%THESE LINES SAVE DATA TO WORKSPACE/ERROR CHECK%%%%%%%%%%%%%%%%%%%%%
 check = horzcat(trial,'.mat');
 if exist(check)==0
-    newName = input('Voltage of run, Enter as V### (i.e for 100V run enter V100):', 's');
-    TF = isstrprop(newName,'digit');
-    k = 1;
-    if TF(1) == 1;
-        while k ==1
-            newName = input('Voltage of run, Enter as V### (i.e for 100V run enter V100):', 's');
-            TF = isstrprop(newName,'digit');
-            if TF(1) == 0;
-                k = 0;
-            end
-        end
-    end
+    newName = varcheck();
     S.(newName) = Data;
-    save(trial, '-struct', 'S')
-    
-else
-        
+    save(trial, '-struct', 'S') 
+else  
     variableInfo = whos('-file',check);
-    newName = input('Voltage of run, Enter as V### (i.e for 100V run enter V100):', 's');
-    TF = isstrprop(newName,'digit');
-    k =1;
-    if TF(1) == 1;
-        while k ==1
-            newName = input('Voltage of run, Enter as V### (i.e for 100V run enter V100):', 's');
-            TF = isstrprop(newName,'digit');
-            if TF(1) == 0;
-                k = 0;
-            end
-        end
-    end
+    newName = varcheck();
     
     t = 1;
     j = 0;
-    k = 1;
     while t==1
         for i=1:length(variableInfo)
             if strcmp(newName,variableInfo(i,1).name)
                 j = j+1;
                 disp('Trial run has already been entered')
-                newName = input('Voltage of run, Enter as V### (i.e for 100V run enter V100):', 's');
-                TF = isstrprop(newName,'digit');
-                if TF(1) == 1;
-                    while k ==1
-                        newName = input('Voltage of run, Enter as V### (i.e for 100V run enter V100):', 's');
-                        TF = isstrprop(newName,'digit');
-                        if TF(1) == 0;
-                            k = 0;
-                        end
-                    end
-                end
+                newName = varcheck();
             end
         end
         if j == 0
@@ -180,7 +147,6 @@ else
         j = 0;
     end
     S.(newName) = Data;
-
 
     if exist(check)>=1
         save(trial, '-struct', 'S','-append')
