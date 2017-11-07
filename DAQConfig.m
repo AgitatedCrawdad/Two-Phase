@@ -56,6 +56,7 @@ try
     aNames(47) = 'DIO0_EF_ENABLE';
     
     
+    
     % EF INDEX VALUES FOR THERMOCOUPLES
     % 20: Thermocouple type E
     % 21: Thermocouple type J
@@ -98,7 +99,7 @@ try
     aValues(39) = 1.0;    %Slope for CJC reading
     aValues(40) = 0.0;    %Offset for CJC reading
     aValues(41) = 0.1;    %Range of voltage for TC
-    aValues(42) = 10;     %Resolution index
+    aValues(42) = 12;     %Resolution index
     aValues(43) = 13;     %Negative Channel
     aValues(44) = 1;      %Read in Celsius
     
@@ -106,6 +107,7 @@ try
     aValues(45) = 3;  %Select rising or falling edges (3 or 4)
     aValues(46) = 1;  %Select Clock Source
     aValues(47) = 0;  %Turn on DIO_EF
+    
     LabJack.LJM.eWriteNames(handle, numInputs, aNames, aValues, 0);
 
     aValues(47) = 1;  %Turn on DIO_EF

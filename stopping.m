@@ -6,12 +6,8 @@ handle = DAQConfig();
 y = Takedata(handle);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-trial = 'Data_110V_25C'; 
+trial = 'Trial_55C_1'; 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if exist(trial,'var')
-else
-    error('Change name of trial data, file already exists')
-end
 
 %%
 global KEY_IS_PRESSED
@@ -35,9 +31,9 @@ startTime = datetime('now');
 set(gcf, 'KeyPressFcn', @myKeyPressFcn)
 
 legend('TC1','TC2','TC3','TC4','P1','P2','P3','M','Location','northwest');
-
+i = 0;
 while ~KEY_IS_PRESSED 
-
+      i = i + 1;
       t =  datetime('now') - startTime;
       addpoints(T1L,datenum(t),y(1))
       addpoints(T2L,datenum(t),y(2))
@@ -51,9 +47,17 @@ while ~KEY_IS_PRESSED
       datetick('x','keeplimits')
       
       drawnow
-
-%       disp(num2str(datenum(t)*24*3600)+',')
-      pause(2)
+      %%
+      if i ==1 || mod(i,14)==0
+          show1 = ['Time  |',' T1 |',' T2 |',' T3 |',' T4 |','  P1 |','  P2 |','  P3 |',' M'];
+          disp(show1);
+      end
+      show1 = [num2str(datenum(t)*24*3600,'%06.1f'),'|',num2str(y(1),'%#5.1f'),'|',num2str(y(2),'%#5.1f'),'|',num2str(y(3),'%#5.1f'),'|'];
+      show2 = [num2str(y(7),'%#5.1f'),'|',num2str(y(4)*6,'%#5.2f'),'|',num2str(y(5)*6,'%#5.2f'),'|',num2str(y(6)*6,'%#5.2f'),'|',num2str(y(9)/5.264,'%#5.3f')];
+      show3 = horzcat(show1,show2);
+      disp(show3);
+      %%
+      pause(0.1)
       y = Takedata(handle);
 end
 
@@ -100,13 +104,44 @@ assignin('base','timeSecs',timeSecs)
 
 Data = horzcat(timeSecs.',T1.',T2.',T3.',T4.',P1.',P2.',P3.',M.'); %.' transposed the vector, horzcat concatenates to a single matrix
 assignin('base',trial,Data);
-save(trial,'Data')
 
-figure
-plot(timeSecs,tempLogs1,timeSecs,tempLogs2,timeSecs,tempLogs3)
-xlabel('Elapsed time (sec)')
-ylabel('Temperature (\circC)')
-disp('loop ended')
+check = horzcat(trial,'.mat');
+
+
+t = 1;
+j = 0;
+variableInfo = whos('-file',check);
+newName = input('Voltage of run, Enter as V# (i.e for 100V run enter V100):', 's');
+while t==1
+    for i=1:length(variableInfo)
+        if strcmp(newName,variableInfo(i,1).name)
+            j = j+1;
+            disp('Trial run has already been entered')
+            newName = input('Voltage of run, Enter as V# (i.e for 100V run enter V100):', 's');
+        end
+    end
+    if j == 0
+        t = 0;
+    end
+    j = 0;
+end
+S.(newName) = Data;
+
+
+if exist(check)>=1
+    save(trial, '-struct', 'S','-append')
+else
+    save(trial, '-struct', 'S')
+end
+
+
+% save(trial,'Data')
+
+% figure
+% plot(timeSecs,tempLogs1,timeSecs,tempLogs2,timeSecs,tempLogs3)
+% xlabel('Elapsed time (sec)')
+% ylabel('Temperature (\circC)')
+% disp('loop ended')
 
 function myKeyPressFcn(hObject, event)
 
