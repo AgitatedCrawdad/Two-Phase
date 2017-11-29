@@ -18,9 +18,8 @@ try
     %Setup and call eWriteNames to write values.
   %% SPECIFIES WHAT NAMES WILL HAVE VALUES ASSIGNED TO THEM
     numInputs = 47; %ADJUST ACCORDING TO NUMBER OF ADDRESSING WRITING
-%     aNames = NET.createArray('System.String', numInputs);
     aNames = NET.createArray('System.String', numInputs);
-    for i=0:2:4 %%This loop sets the names for 3 of thermocouples
+    for i=0:2:4 %%This loop sets the names for 3 of the Thermocouples
         j = num2str(i);
         aNames(1+((i/2)*8)) = ['AIN' j '_EF_INDEX'];    %Specifies the type of thermocouple to be used
         aNames(2+((i/2)*8)) = ['AIN' j '_EF_CONFIG_B']; %Specifies that the CJC will be used from the DAQ
