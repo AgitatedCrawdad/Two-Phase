@@ -85,6 +85,7 @@ classdef Temp
           set(axes3,'FontName','Times New Roman','FontSize',28,'Layer','top','LineWidth',3);
           xlabel('Time [s]')
           ylabel('Temperature [°C]')
+          grid on
           g=gcf;
           g.Units='inches';
           g.Position=[-19.9896 0.4271 12.7708 9.1875];
@@ -97,6 +98,7 @@ classdef Temp
           set(axes3,'FontName','Times New Roman','FontSize',28,'Layer','top','LineWidth',3);
           xlabel('Time [s]')
           ylabel('Temperature [°C]')
+          grid on
           g=gcf;
           g.Units='inches';
           g.Position=[-19.9896 0.4271 12.7708 9.1875];
@@ -109,6 +111,7 @@ classdef Temp
           set(axes3,'FontName','Times New Roman','FontSize',28,'Layer','top','LineWidth',3);
           xlabel('Time [s]')
           ylabel('Temperature [°C]')
+          grid on
           g=gcf;
           g.Units='inches';
           g.Position=[-19.9896 0.4271 12.7708 9.1875];
