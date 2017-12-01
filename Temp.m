@@ -16,6 +16,7 @@ classdef Temp
       P3
       Ps
       M
+      Name
    end
    methods
       function obj = Temp(F)
@@ -40,6 +41,7 @@ classdef Temp
              
              obj.Ts = F(:,2:5);
              obj.Ps = F(:,6:8);
+             
          end
          
          m = size(obj.Time,1);
@@ -136,7 +138,7 @@ classdef Temp
           axes3=gca;
           set(axes3,'FontName','Times New Roman','FontSize',28,'Layer','top','LineWidth',3);
           xlabel('Time [s]');
-          ylabel('Temperature [°C]');
+          ylabel('Mass Flow Rate [g/s]');
           g=gcf;
           g.Units='inches';
           g.Position=[-19.9896 0.4271 12.7708 9.1875];
