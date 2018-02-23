@@ -78,7 +78,7 @@ try
         aValues(1+(i*8)) = 22;     %Specifies the type of Thermocouple(Type K)
         aValues(2+(i*8)) = 60052;  %Address of the CJC on the DAQ
         aValues(3+(i*8)) = 1.0;    %Slope for CJC reading
-        aValues(4+(i*8)) = -3.8;    %Offset for CJC reading
+        aValues(4+(i*8)) = -5.57;    %Offset for CJC reading
         aValues(5+(i*8)) = 0.1;    %Range of voltage for TC
         aValues(6+(i*8)) = 12;     %Resolution index
         aValues(7+(i*8)) = i*2+1;  %Negative Channel

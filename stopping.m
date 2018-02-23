@@ -7,7 +7,7 @@ handle = DAQConfig();
 y = Takedata(handle);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-trial = 'Trial_90C_2'; %%KEEP FORMATTING I.E ('Trial_SubcooledTemp#C_Trial#')
+trial = 'Trial_80C_0'; %%KEEP FORMATTING I.E ('Trial_SubcooledTemp#C_Trial#')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 check = horzcat(trial,'.mat');
@@ -45,6 +45,7 @@ legend('TC1','TC2','TC3','TC4','P1','P2','P3','M','Location','northwest');
 
 %%%%%%%%%%%%%%%%%%%%THESE LINES PLOT THE LIVE DATA %%%%%%%%%%%%%%%%%%%%%%%%
 i = 0;
+velT =0;
 while ~KEY_IS_PRESSED 
       i = i + 1;
       t =  datetime('now') - startTime;
@@ -66,12 +67,19 @@ while ~KEY_IS_PRESSED
           show1 = ['Time  |',' T1 |',' T2 |',' T3 |',' T4 |','  P1 |','  P2 |','  P3 |',' M'];
           disp(show1);
       end
+      if i ==2 || mod(i,30)==0
+         velT =  (y(1)-pastT)/pastTime; 
+         accT = (y(1)-pastT)/pastTime^2;
+      end
+      
       show1 = [num2str(datenum(t)*24*3600,'%06.1f'),'|',num2str(y(1),'%#5.1f'),'|',num2str(y(2),'%#5.1f'),'|',num2str(y(3),'%#5.1f'),'|'];
-      show2 = [num2str(y(7),'%#5.1f'),'|',num2str(y(4)*6,'%#5.2f'),'|',num2str(y(5)*6,'%#5.2f'),'|',num2str(y(6)*6,'%#5.2f'),'|',num2str(y(9)/5.264,'%#5.3f')];
+      show2 = [num2str(y(7),'%#5.1f'),'|',num2str(y(4)*6,'%#5.2f'),'|',num2str(y(5)*6,'%#5.2f'),'|',num2str(y(6)*6,'%#5.2f'),'|',num2str(y(9)/5.264,'%#5.3f'),num2str(velT,'%#5.2f')];
       show3 = horzcat(show1,show2);
       disp(show3);
       %%
       pause(0.1)
+      pastT = y(1);
+      pastTime = datenum(t)*24*3600;
       y = Takedata(handle); %%%GRABS THE DATA AND PUTS IT INTO VARIABLE Y
 end
 %%%%%%%%%%%%%%%%%%%%THESE LINES PLOT THE LIVE DATA %%%%%%%%%%%%%%%%%%%%%%%%
