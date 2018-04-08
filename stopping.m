@@ -7,7 +7,7 @@ handle = DAQConfig();
 y = Takedata(handle);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-trial = 'Trial_80C_0'; %%KEEP FORMATTING I.E ('Trial_SubcooledTemp#C_Trial#')
+trial = 'Trial_70C_Salt'; %%KEEP FORMATTING I.E ('Trial_SubcooledTemp#C_Trial#')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 check = horzcat(trial,'.mat');
@@ -32,6 +32,8 @@ T1L = animatedline('Color','r');
 T2L = animatedline('Color','r','LineStyle','--');
 T3L = animatedline('Color','r','LineStyle',':');
 T4L = animatedline('Color','k');
+T5L = animatedline('Color','g');
+C1L = animatedline('Color','c');
 P1L = animatedline('Color','b');
 P2L = animatedline('Color','b','LineStyle','--');
 P3L = animatedline('Color','b','LineStyle','-.');
@@ -40,12 +42,11 @@ ax = gca;
 ax.YGrid = 'on';
 startTime = datetime('now');
 set(gcf, 'KeyPressFcn', @myKeyPressFcn)
-legend('TC1','TC2','TC3','TC4','P1','P2','P3','M','Location','northwest');
+legend('TC1','TC2','TC3','TC4','TC5','C1L','P1','P2','P3','M','Location','northwest');
 %%%%%%%%%%%%%%%%%%%%THESE LINES CREATE THE LIVE DATA PLOT%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%THESE LINES PLOT THE LIVE DATA %%%%%%%%%%%%%%%%%%%%%%%%
 i = 0;
-velT =0;
 while ~KEY_IS_PRESSED 
       i = i + 1;
       t =  datetime('now') - startTime;
@@ -53,6 +54,8 @@ while ~KEY_IS_PRESSED
       addpoints(T2L,datenum(t),y(2))
       addpoints(T3L,datenum(t),y(3))
       addpoints(T4L,datenum(t),y(7))
+      addpoints(T5L,datenum(t),y(10)*8.475*6.25-25)% The 8.475 converts the voltage to mA then from mA to a temp with a slope and offset from 0C to 100C
+      addpoints(C1L,datenum(t),y(11)*8.475*3.125+7.5)% Converts voltage to mA then converts mA to (mSiemen/cm) from 30 mS/cm to 70 mS/cm at the max
       addpoints(P1L,datenum(t),y(4)*6)
       addpoints(P2L,datenum(t),y(5)*6)
       addpoints(P3L,datenum(t),y(6)*6)
@@ -64,22 +67,20 @@ while ~KEY_IS_PRESSED
       %%
       %%%%THIS SECTION OF CODE PRINTS OUT THE DATA TO THE CONSOLE
       if i ==1 || mod(i,14)==0
-          show1 = ['Time  |',' T1 |',' T2 |',' T3 |',' T4 |','  P1 |','  P2 |','  P3 |',' M'];
+          show1 = ['Time  |',' T1 |',' T2 |',' T3 |',' T4 |',' T5 |',' C1  |','  P1 |','  P2 |','  P3 |',' M'];
           disp(show1);
       end
-      if i ==2 || mod(i,30)==0
-         velT =  (y(1)-pastT)/pastTime; 
-         accT = (y(1)-pastT)/pastTime^2;
-      end
       
-      show1 = [num2str(datenum(t)*24*3600,'%06.1f'),'|',num2str(y(1),'%#5.1f'),'|',num2str(y(2),'%#5.1f'),'|',num2str(y(3),'%#5.1f'),'|'];
-      show2 = [num2str(y(7),'%#5.1f'),'|',num2str(y(4)*6,'%#5.2f'),'|',num2str(y(5)*6,'%#5.2f'),'|',num2str(y(6)*6,'%#5.2f'),'|',num2str(y(9)/5.264,'%#5.3f'),num2str(velT,'%#5.2f')];
+      show1 = [num2str(datenum(t)*24*3600,'%06.1f'),'|',num2str(y(1),'%#5.1f'),...
+          '|',num2str(y(2),'%#5.1f'),'|',num2str(y(3),'%#5.1f'),'|'];
+      show2 = [num2str(y(7),'%#5.1f'),'|',num2str(y(10)*8.475*6.25-25,'%#5.1f'),'|',num2str(y(11)*8.475*3.125+7.5,'%#5.2f'),'|',...
+          num2str(y(4)*6,'%#5.2f'),'|',num2str(y(5)*6,'%#5.2f'),'|',...
+          num2str(y(6)*6,'%#5.2f'),'|',num2str(y(9)/5.264,'%#5.3f')];
       show3 = horzcat(show1,show2);
       disp(show3);
       %%
-      pause(0.1)
-      pastT = y(1);
-      pastTime = datenum(t)*24*3600;
+      pause(0.5)
+
       y = Takedata(handle); %%%GRABS THE DATA AND PUTS IT INTO VARIABLE Y
 end
 %%%%%%%%%%%%%%%%%%%%THESE LINES PLOT THE LIVE DATA %%%%%%%%%%%%%%%%%%%%%%%%
@@ -98,6 +99,8 @@ end
 [timeLogs,tempLogs2] = getpoints(T2L);
 [timeLogs,tempLogs3] = getpoints(T3L);
 [timeLogs,tempLogs4] = getpoints(T4L);
+[timeLogs,tempLogs5] = getpoints(T5L);
+[timeLogs,cLogs1] = getpoints(C1L);
 [timeLogs,pLogs1] = getpoints(P1L);
 [timeLogs,pLogs2] = getpoints(P2L);
 [timeLogs,pLogs3] = getpoints(P3L);
@@ -108,6 +111,8 @@ assignin('base','T1',tempLogs1);
 assignin('base','T2',tempLogs2);
 assignin('base','T3',tempLogs3);
 assignin('base','T4',tempLogs4);
+assignin('base','T5',tempLogs5);
+assignin('base','C1',cLogs1);
 assignin('base','P1',pLogs1);
 assignin('base','P2',pLogs2);
 assignin('base','P3',pLogs3);
@@ -117,6 +122,8 @@ T1 = tempLogs1;
 T2 = tempLogs2;
 T3 = tempLogs3;
 T4 = tempLogs4;
+T5 = tempLogs5;
+C1 = cLogs1;
 P1 = pLogs1;
 P2 = pLogs2;
 P3 = pLogs3;
@@ -125,7 +132,7 @@ M = MLogs;
 timeSecs = (timeLogs-timeLogs(1))*24*3600;
 assignin('base','timeSecs',timeSecs)
 
-Data = horzcat(timeSecs.',T1.',T2.',T3.',T4.',P1.',P2.',P3.',M.'); %.' transposed the vector, horzcat concatenates to a single matrix
+Data = horzcat(timeSecs.',T1.',T2.',T3.',T4.',T5.',C1.',P1.',P2.',P3.',M.'); %.' transposed the vector, horzcat concatenates to a single matrix
 assignin('base',trial,Data);
 %%%%%%%%%%%%%%%%%%%%THESE LINES SAVE DATA TO WORKSPACE%%%%%%%%%%%%%%%%%%%%%
 

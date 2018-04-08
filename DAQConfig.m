@@ -18,10 +18,10 @@ try
     
     %Setup and call eWriteNames to write values.
   %% SPECIFIES WHAT NAMES WILL HAVE VALUES ASSIGNED TO THEM
-    numInputs = 47; %ADJUST ACCORDING TO NUMBER OF ADDRESSING WRITING
+    numInputs = 55; %ADJUST ACCORDING TO NUMBER OF ADDRESSING WRITING
     aNames = NET.createArray('System.String', numInputs);
     for i=0:2:4 %%This loop sets the names for 3 of the Thermocouples
-        j = num2str(i);
+        j = num2str(i/2);
         aNames(1+((i/2)*8)) = ['AIN' j '_EF_INDEX'];    %Specifies the type of thermocouple to be used
         aNames(2+((i/2)*8)) = ['AIN' j '_EF_CONFIG_B']; %Specifies that the CJC will be used from the DAQ
         aNames(3+((i/2)*8)) = ['AIN' j '_EF_CONFIG_D']; %slope for CJC reading
@@ -49,11 +49,23 @@ try
     aNames(42) = ['AIN' j '_RESOLUTION_INDEX']; 
     aNames(43) = ['AIN' j '_NEGATIVE_CH']; %Specifies negative channel (=AINX+1)
     aNames(44) = ['AIN' j '_EF_CONFIG_A']; %Reads temp in Celsius
+  
+    %AIN4 and AIN5 which are the connected to the currrent shunt (Temp and
+    %Conductivity)
+    k = '4';
+    aNames(45) = ['AIN' k '_EF_INDEX'];
+    aNames(46) = ['AIN' k '_NEGATIVE_CH'];
+    aNames(47) = ['AIN' k '_RESOLUTION_INDEX'];
+    aNames(48) = ['AIN' k '_RANGE'];
+    k = '5';
+    aNames(49) = ['AIN' k '_EF_INDEX'];
+    aNames(50) = ['AIN' k '_NEGATIVE_CH'];
+    aNames(51) = ['AIN' k '_RESOLUTION_INDEX'];
+    aNames(52) = ['AIN' k '_RANGE'];
     
-    
-    aNames(45) = 'DIO0_EF_INDEX';
-    aNames(46) = 'DIO_EF_CLOCK0_ENABLE';
-    aNames(47) = 'DIO0_EF_ENABLE';
+    aNames(53) = 'DIO0_EF_INDEX';
+    aNames(54) = 'DIO_EF_CLOCK0_ENABLE';
+    aNames(55) = 'DIO0_EF_ENABLE';
     
     
     
@@ -78,10 +90,10 @@ try
         aValues(1+(i*8)) = 22;     %Specifies the type of Thermocouple(Type K)
         aValues(2+(i*8)) = 60052;  %Address of the CJC on the DAQ
         aValues(3+(i*8)) = 1.0;    %Slope for CJC reading
-        aValues(4+(i*8)) = -5.57;    %Offset for CJC reading
+        aValues(4+(i*8)) = 0;  %Offset for CJC reading
         aValues(5+(i*8)) = 0.1;    %Range of voltage for TC
         aValues(6+(i*8)) = 12;     %Resolution index
-        aValues(7+(i*8)) = i*2+1;  %Negative Channel
+        aValues(7+(i*8)) = 199;    %Negative Channel (199 = GND)
         aValues(8+(i*8)) = 1;      %Read in Celsius
     end
     
@@ -103,14 +115,28 @@ try
     aValues(43) = 13;     %Negative Channel
     aValues(44) = 1;      %Read in Celsius
     
+    %AIN4 (4-20mA current shunt used to create voltage)(Temp. on RTD on
+    %Conductivity Probe)
+    aValues(45) = 0;        %Index (0=disabled EF)
+    aValues(46) = 199;      %Negative channel
+    aValues(47) = 12;       %Resolution index
+    aValues(48) = 10;       %Voltage range
     
-    aValues(45) = 3;  %Select rising or falling edges (3 or 4)
-    aValues(46) = 1;  %Select Clock Source
-    aValues(47) = 0;  %Turn on DIO_EF
+    %AIN5 (4-20mA current shunt used to create voltage for salt water conductivity)
+    aValues(49) = 0;        %Index (0=disabled EF)
+    aValues(50) = 199;      %Negative channel
+    aValues(51) = 12;       %Resolution index
+    aValues(52) = 10;       %Voltage range
+    
+    
+    
+    aValues(53) = 3;  %Select rising or falling edges (3 or 4)
+    aValues(54) = 1;  %Select Clock Source
+    aValues(55) = 0;  %Turn on DIO_EF
     
     LabJack.LJM.eWriteNames(handle, numInputs, aNames, aValues, 0);
 
-    aValues(47) = 1;  %Turn on DIO_EF
+    aValues(55) = 1;  %Turn on DIO_EF
 
     LabJack.LJM.eWriteNames(handle, numInputs, aNames, aValues, 0);
 
