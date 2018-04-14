@@ -2,7 +2,7 @@ function Plot2(name,prop)
 %%%%%%%%%%%%%%%%%%
 %Used to plot any variable from the new experimental setup
 %%%%%%%%%%%%%%%%%%
-import Temp2
+import "Trial_70C_7.mat"
 v = 0;
 for i = 1:9
     v(i) = 100+10*i;
@@ -28,7 +28,7 @@ if exist('V190')==1
     error_e = std(get(e,prop));
     error_f = std(get(f,prop)); error_g = std(get(g,prop));error_h = std(get(h,prop));error_i = std(get(i,prop));
     errors = 2*[error_a error_b error_c error_d error_e error_f error_g error_h error_i];
-    errorbar(x,y,errors,'k-*');
+    errorbar(x,y,errors,'r-*');
 else
     x = x(1:end-1);
     y = [mean(a.M) mean(b.M) mean(c.M) mean(d.M) mean(e.M) mean(f.M) mean(g.M) mean(h.M)];
