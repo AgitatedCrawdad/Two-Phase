@@ -1,4 +1,6 @@
 classdef Temp < matlab.mixin.SetGet 
+%This is used to store runs as an object for easy use of grabbing contained. 
+%Used for 110V-180V in increments of 10V runs
    properties
       Value
       Time

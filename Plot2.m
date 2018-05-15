@@ -2,7 +2,12 @@ function Plot2(name,prop)
 %%%%%%%%%%%%%%%%%%
 %Used to plot any variable from the new experimental setup
 %%%%%%%%%%%%%%%%%%
-import "Trial_70C_7.mat"
+%Example Plot2('Trial_70C_S10','M') would plot the flowrate at each voltage
+%level for that trial
+%
+%
+%
+%
 v = 0;
 for i = 1:9
     v(i) = 100+10*i;

@@ -1,4 +1,6 @@
 classdef Temp2 < matlab.mixin.SetGet
+%This is used to store runs as an object for easy use of grabbing contained. 
+%Used for 110V-190V in increments of 10V runs
    properties
       Value
       Time
@@ -13,7 +15,7 @@ classdef Temp2 < matlab.mixin.SetGet
       T3S
       T4S
       T5S
-      c1
+      C1
       P1
       P2
       P3
@@ -27,7 +29,7 @@ classdef Temp2 < matlab.mixin.SetGet
           This is the constructor function used to create the intial
           variables once the input matrix has been entered. It is important
           that columns of the matrix follow the variable order below (i.e
-          first 3 columns=Thermocouple (TC) data, the next 3 = Pressure Transducer(PT) data and then Mass Flow rate)
+          first 5 columns=Thermocouple (TC) data, Conductivity, the next 3 = Pressure Transducer(PT) data and then Mass Flow rate)
           
           %}
          if nargin ~= 0
@@ -38,7 +40,7 @@ classdef Temp2 < matlab.mixin.SetGet
              obj.T3 = F(:,4);
              obj.T4 = F(:,5); 
              obj.T5 = F(:,6); 
-             obj.c1 = F(:,7); 
+             obj.C1 = F(:,7); 
              obj.P1 = F(:,8); 
              obj.P2 = F(:,9); 
              obj.P3 = F(:,10);
@@ -114,7 +116,7 @@ classdef Temp2 < matlab.mixin.SetGet
           g.Units='inches';
           g.Position=[-19.9896 0.4271 12.7708 9.1875];
       end
-      function r = press(obj) %This function plots the unfiltered PT data
+      function r = press(obj) %This function plots the unfiltered Pressure Transducer data
           figure
           r = plot(obj.Time,obj.P1,obj.Time,obj.P2,obj.Time,obj.P3);
           legend('P1', 'P2', 'P3');

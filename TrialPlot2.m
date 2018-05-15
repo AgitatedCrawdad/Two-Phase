@@ -1,10 +1,16 @@
 function trialplot2(name)
+%This is an OLD file used to plot MASS FLOW RATE for runs containing 
+%110V-190V in increments of 10V
+%Instead use file named Plot2
+%If you still want to use this file enter here is an example of how to use
+%it enter: trialplot2('Trial_70C_7')
+%To show multiple trials type 'hold on' and then plot multiple trials
 import Temp2
 v = 0;
 for i = 1:9
     v(i) = 100+10*i;
 end
-num = 180;
+num = 120;
 x = v.^2/12;
 nametemp = name;
 name = horzcat(name,'.mat');

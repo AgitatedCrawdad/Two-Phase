@@ -1,8 +1,8 @@
 clear
-trial = 'Trial_70C_4'; %CHANGE THIS TO REFLECT TRIAL WANTED
+trial = 'Trial_70C_6'; %CHANGE THIS TO REFLECT TRIAL WANTED
 trialname = horzcat(trial,'.mat');
 load(trialname)
-num = 150; %THIS TAKES THE LAST 200 DATA POINTS FOR EACH VOLTAGE RUN
+num = 120; %THIS TAKES THE LAST 200 DATA POINTS FOR EACH VOLTAGE RUN
 v = 0;
 for i = 1:9
     v(i) = 100+10*i;

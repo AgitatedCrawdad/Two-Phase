@@ -1,4 +1,10 @@
 function trialplot(name)
+%This is an OLD file used to plot MASS FLOW RATE for runs containing 
+%110V-180V in increments of 10V
+%Instead use file named Plot
+%If you still want to use this file enter here is an example of how to use
+%it enter: trialplot('Trial_70C_2')
+%To show multiple trials type 'hold on' and then plot multiple trials
 import Temp
 v = 0;
 for i = 1:9
