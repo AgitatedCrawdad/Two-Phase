@@ -1,4 +1,6 @@
-function Plot(name,prop)
+function [x,y,errors]=Plot(name,prop)
+% [a,b,c,d,e,f,g,h,i]=Plot(name,prop)
+
 %%%%%%%%%%%%%%%%%%
 %Used to plot any variable from the old experimental setup
 %%%%%%%%%%%%%%%%%%
@@ -28,14 +30,26 @@ if exist('V190')==1
     error_e = std(get(e,prop));
     error_f = std(get(f,prop)); error_g = std(get(g,prop));error_h = std(get(h,prop));error_i = std(get(i,prop));
     errors = 2*[error_a error_b error_c error_d error_e error_f error_g error_h error_i];
-    errorbar(x,y,errors,'-*');
+    if strcmp(prop,'T4')==1
+        plt = errorbar(x,y+7.8+1.6,errors+2.2,'-o','LineWidth',2); %Heater TC off by 7.8C
+    else
+        plt = errorbar(x,y,errors,'-o','LineWidth',2);    
+    end
+    plt.Color(4) = 0.9;
 else
     x = x(1:end-1);
-    y = [mean(a.M) mean(b.M) mean(c.M) mean(d.M) mean(e.M) mean(f.M) mean(g.M) mean(h.M)];
-    error_a = std(a.M); error_b = std(b.M);error_c = std(c.M);error_d = std(d.M);error_e = std(e.M);
-    error_f = std(f.M); error_g = std(g.M);error_h = std(h.M);
+    y = [mean(get(a,prop)) mean(get(b,prop)) mean(get(c,prop)) mean(get(d,prop))...
+        mean(get(e,prop)) mean(get(f,prop)) mean(get(g,prop)) mean(get(h,prop))];
+    error_a = std(get(a,prop)); error_b = std(get(b,prop));error_c = std(get(c,prop));error_d = std(get(d,prop));
+    error_e = std(get(e,prop));
+    error_f = std(get(f,prop)); error_g = std(get(g,prop));error_h = std(get(h,prop));
     errors = 2*[error_a error_b error_c error_d error_e error_f error_g error_h];
-    errorbar(x,y,errors,'-*');
+    if strcmp(prop,'T4')==1
+        plt = errorbar(x,y+7.8+1.6,errors,'-o','LineWidth',2); %Heater TC off by 7.8C
+    else
+        plt = errorbar(x,y,errors,'-o','LineWidth',2);    
+    end
+    plt.Color(4) = 0.1;
 end
 
 % plot(1008,mean(a.M),'o',1200,mean(b.M),'o',1408,mean(c.M),'o',1633,mean(d.M),'o',1875,mean(e.M),'o',2133,mean(f.M),'o',2408,mean(g.M),'o',2700,mean(h.M),'o')
@@ -45,5 +59,5 @@ xlabel('Power [Watts]')
 grid on
 % nametemp = strrep(nametemp,'_','');
 % legend(nametemp)
-clear
+% clear
 end

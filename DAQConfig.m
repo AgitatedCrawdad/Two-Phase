@@ -112,7 +112,7 @@ try
     aValues(40) = 0.0;    %Offset for CJC reading
     aValues(41) = 0.1;    %Range of voltage for TC
     aValues(42) = 12;     %Resolution index
-    aValues(43) = 13;     %Negative Channel
+    aValues(43) = 199;    %Negative Channel
     aValues(44) = 1;      %Read in Celsius
     
     %AIN4 (4-20mA current shunt used to create voltage)(Temp. on RTD on

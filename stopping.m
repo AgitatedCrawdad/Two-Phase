@@ -7,12 +7,12 @@ handle = DAQConfig();
 y = Takedata(handle);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-trial = 'Trial_60C_points'; %%KEEP FORMATTING I.E ('Trial_SubcooledTemp#C_Trial#')
+trial = 'Heatercheck'; %%KEEP FORMATTING I.E ('Trial_SubcooledTemp#C_Trial#')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 check = horzcat(trial,'.mat');
 if exist(check)~=0
-    errmsg = input('MAKE SURE YOU ARE NOT OVERWRITTING DATA (LOOK AT LINE 9 & CURRENT FOLDER) (enter "y" if you think you are, or "n" if not):','s');
+    errmsg = input('MAKE SURE YOU ARE NOT OVERWRITTING DATA (LOOK AT LINE 10 & CURRENT FOLDER) (enter "y" if you think you are, or "n" if not):','s');
     if errmsg =='y'
        error('You may have successfully prevented data overwrite, congratulations') 
     end
@@ -55,7 +55,7 @@ while ~KEY_IS_PRESSED
       addpoints(T3L,datenum(t),y(3))
       addpoints(T4L,datenum(t),y(7))
       addpoints(T5L,datenum(t),y(10)*8.475*6.25-25)% The 8.475 converts the voltage to mA then from mA to a temp with a slope and offset from 0C to 100C
-      addpoints(C1L,datenum(t),y(11)*8.475*3.125+7.5)% Converts voltage to mA then converts mA to (mSiemen/cm) from 30 mS/cm to 70 mS/cm at the max
+      addpoints(C1L,datenum(t),y(11)*8.475*3.125+7.5)% Converts voltage to mA then converts mA to (mSiemen/cm) from 20 mS/cm to 70 mS/cm at the max
       addpoints(P1L,datenum(t),y(4)*6)
       addpoints(P2L,datenum(t),y(5)*6)
       addpoints(P3L,datenum(t),y(6)*6)

@@ -92,16 +92,21 @@ classdef Temp2 < matlab.mixin.SetGet
       end
       function r = temps(obj) %This function is used to plot the unfiltered thermocouple(TC) data
           figure
-          r = plot(obj.Time,obj.T1,obj.Time,obj.T2,obj.Time,obj.T3,obj.Time,obj.T4,obj.Time,obj.T5);
-          legend('T1', 'T2', 'T3','T4', 'T5');
+          num = 240;
+%           r = plot(obj.Time(end-num:end)-obj.Time(end-num),obj.T1(end-num:end),obj.Time(end-num:end)-obj.Time(end-num),obj.T2(end-num:end),obj.Time(end-num:end)-obj.Time(end-num),obj.T3(end-num:end),obj.Time(end-num:end)-obj.Time(end-num),obj.T4(end-num:end),obj.Time(end-num:end)-obj.Time(end-num),obj.T5(end-num:end));
+%           r = plot(obj.Time(end-num:end)-obj.Time(end-num),obj.T2(end-num:end),obj.Time(end-num:end)-obj.Time(end-num),obj.T3(end-num:end),obj.Time(end-num:end)-obj.Time(end-num),obj.T4(end-num:end),obj.Time(end-num:end)-obj.Time(end-num),obj.T5(end-num:end));
+          r = plot(obj.Time(end-num:end)-obj.Time(end-num),obj.T5(end-num:end));
+%           legend('T2', 'T3','T4', 'T5');
+          legend('T5');
+          set(findall(gca, 'Type', 'Line'),'LineWidth',2);
           axes3=gca;
           set(axes3,'FontName','Times New Roman','FontSize',28,'Layer','top','LineWidth',3);
           xlabel('Time [s]')
           ylabel('Temperature [°C]')
           grid on
           g=gcf;
-          g.Units='inches';
-          g.Position=[-19.9896 0.4271 12.7708 9.1875];
+%           g.Units='inches';
+%           g.Position=[-19.9896 0.4271 12.7708 9.1875];
       end
       function r = smoothtemps(obj) %This function is used to plot the filtered TC data using a moving average
           figure;
@@ -126,8 +131,8 @@ classdef Temp2 < matlab.mixin.SetGet
           ylabel('Temperature [°C]')
           grid on
           g=gcf;
-          g.Units='inches';
-          g.Position=[-19.9896 0.4271 12.7708 9.1875];
+%           g.Units='inches';
+%           g.Position=[-19.9896 0.4271 12.7708 9.1875];
       end
       function r = mass(obj) %This function plots the filtered Mass Flow rate data using a moving average
           figure;
