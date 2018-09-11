@@ -1,0 +1,94 @@
+function [TotalPdrop, m_dot, quality, alpha, heater_power] = VoidTheory(vars)
+%% Theoretical Void/Quality Calculations
+% Assume inlet flow conditions of 29 psia and 60C
+% Assume total piping length equals 3m
+% 1.5m of Two-Phase flow and 1.5m of Single phase flow
+% TotalPdrop = vars(1);
+m_dot = vars(2);
+% quality = vars(3);
+% alpha = vars(4);
+heater_power = vars(5);
+%% Variables
+P = 29; %Pressure [PSI]
+T = 60; %Temperature [C]
+% m_dot = 0.0106;
+% m_dot = 0.003979974020503; %Mass Flow Rate [kg/s] 
+flow_area = 5.067E-4; %Flow area [m^2]
+flow_diam = 0.0254; %[m]
+length = 1.5; %[m]
+heater_length = 0.6; %[m]
+% heater_power = 2.7; %[kW]
+g = 9.81; %Acceleration due to gravity [m/s^2]
+
+%% Single Phase Section
+mass_flux = m_dot/flow_area; %[kg/m^2*s]
+Tsat = IAPWS_IF97('Tsat_p',P*0.00689476)-273.15; %Pressure to be given in MPa
+rho_liq =  1./IAPWS_IF97('v_pT',P*0.00689476,T+273); %Find liquid density using Pressure and Temperature [MPA] [K]
+rho_vap =  1./IAPWS_IF97('v_pT',P*0.00689476,Tsat+273.16); %Find vapor density using Pressure and Temperature [MPA] [K]
+mu_liq = (IAPWS_IF97('mu_pT',P*0.00689476,Tsat+273.1));%Viscosity
+mu_vap = (IAPWS_IF97('mu_pT',P*0.00689476,Tsat+273.16));%Viscosity
+
+velocity = mass_flux/rho_liq;
+
+ReLiq = (rho_liq*velocity*flow_diam)/mu_liq;
+
+if ReLiq <2300
+    f_liq = 64/ReLiq;
+else
+    f_liq = 0.079/(ReLiq^0.25);
+end
+
+% dpsinglefric = -(2*f_liq*(mass_flux^2)*length)/(flow_diam*rho_liq);
+dpsinglefric = (2*f_liq*(mass_flux^2)*length)/(flow_diam*rho_liq);
+
+dpsinglegrav = rho_liq*g*length;
+
+%% Two Phase Section
+h_fsat = IAPWS_IF97('h_pT',P*0.00689476,Tsat+273.15); %Saturated Liquid Enthalpy
+h_vsat = IAPWS_IF97('h_pT',P*0.00689476,Tsat+273.16); %Saturated Vapor Enthalpy
+h_in = IAPWS_IF97('h_pT',P*0.00689476,T+273.15); %Inlet Liquid Enthalpy
+hfg = h_vsat-h_fsat; %Latent Heat of Vaporization
+h_gain = heater_power/m_dot;
+quality = ((heater_power./m_dot)+(h_in-h_fsat)')./(hfg');
+if quality < 0
+    quality = 0;
+end
+
+% Slip = 1; %Slip Ratio
+
+% alpha = 1./(1+(rho_vap/rho_liq)*Slip*((1-quality)./quality)) %Homogeneous
+
+ReVap = (rho_vap*velocity*flow_diam)/mu_vap;
+if ReVap < 2300
+    f_vap = 64/ReVap;
+    if ReLiq < 2300
+        C=5;
+    else
+        C=10;
+    end
+else
+    f_vap = 0.079/(Re^0.25);
+    if ReLiq < 2300
+        C=12;
+    else
+        C=20;
+    end
+end
+
+
+dptwovapfric = (2*f_vap*(mass_flux^2)*(quality^2))/(flow_diam*rho_vap);
+dptwoliqfric = (2*f_liq*(mass_flux^2)*(1-quality)^2)/(flow_diam*rho_liq);
+
+XLM = (dptwoliqfric/dptwovapfric)^(0.5);
+
+twophasemultipler = 1 + C*XLM + XLM^2;
+
+dptwototalfric = twophasemultipler*dptwovapfric*length;
+
+alpha = (1+XLM^0.8)^(-0.378);
+dptwograv = (rho_liq*(1-alpha)+rho_vap*alpha)*-g*length;
+
+TotalPdrop =  (dptwototalfric+dptwograv)+(dpsinglefric+dpsinglegrav);
+
+
+% end

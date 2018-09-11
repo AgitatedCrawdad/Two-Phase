@@ -58,7 +58,7 @@ else
     plt.Color(4) = 0.2;
 end
 
-xlabel('Power [Watts]')
+xlabel('Power [Watts]');
 grid on
 % clear
 end

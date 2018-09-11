@@ -7,7 +7,7 @@ handle = DAQConfig();
 y = Takedata(handle);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-trial = 'Heatercheck'; %%KEEP FORMATTING I.E ('Trial_SubcooledTemp#C_Trial#')
+trial = 'Pressure_check'; %%KEEP FORMATTING I.E ('Trial_SubcooledTemp#C_Trial#')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGE NAME TO MATCH EXPERIMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 check = horzcat(trial,'.mat');

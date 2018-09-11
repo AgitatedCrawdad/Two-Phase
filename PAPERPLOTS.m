@@ -120,9 +120,9 @@
 %% Plot Pressures
 % figure(11)
 % hold on
-% Plot2('Trial_60C_2g','P1')
-% Plot2('Trial_60C_2g','P2')
-% Plot2('Trial_60C_2g','P3')
+% Plot2('Trial_60C_2g','P1');
+% Plot2('Trial_60C_2g','P2');
+% Plot2('Trial_60C_2g','P3');
 % legend('P1','P2','P3','Location','NorthEast')
 % ylabel('Pressure [psi]')
 % axes3=gca;
@@ -139,8 +139,8 @@
 % PlotdP('Trial_60C_1g','P1','P3')
 % % PlotdP('Trial_60C_2_tapwater2','P1','P3')
 % % PlotdP('Trial_60C_1_tapwater2','P1','P3')
-% % PlotdP('Trial_60C_points_DI_2','P1','P3')
-% % PlotdP('Trial_60C_points_DI_1','P1','P3')
+% % % PlotdP('Trial_60C_points_DI_2','P1','P3')
+% % % PlotdP('Trial_60C_points_DI_1','P1','P3')
 % legend('Trial 1','Trial 2','Location','NorthEast')
 % ylabel('\Delta Pressure [psi]')
 % axes3=gca;
@@ -243,20 +243,20 @@
 % g.Position=[515 393 805 595];
 
 %% Plot mass flow rate versus power
-% figure(13)
-% Plot2('Trial_60C_1g','M')
-% hold on
-% Plot('Trial_60C_points_DI_1','M')
-% Plot2('Trial_60C_2_tapwater2','M')
-% legend('Seawater','Tap Water','Deionized Water','Location','NorthWest')
-% axes3=gca;
-% set(axes3,'FontName','Times New Roman','FontSize',28,'Layer','top','LineWidth',3);
-% grid on
-% set(findall(gca, 'Type', 'Line'),'LineWidth',2);
-% xlim([1000 3000])
-% g=gcf;
-% g.Position=[515 393 805 595];
-% ylabel('Mass Flow Rate [g/s]')
+figure(10)
+Plot2('Trial_60C_1g','M');
+hold on
+Plot('Trial_60C_points_DI_1','M');
+Plot2('Trial_60C_2_tapwater2','M');
+legend('Seawater','Tap Water','Deionized Water','Location','NorthWest');
+axes3=gca;
+set(axes3,'FontName','Times New Roman','FontSize',28,'Layer','top','LineWidth',3);
+grid on
+set(findall(gca, 'Type', 'Line'),'LineWidth',2);
+xlim([1000 3000])
+g=gcf;
+g.Position=[515 393 805 595];
+ylabel('Mass Flow Rate [g/s]')
 
 %% Calculate Saturation Temperature at the Tip of the Heater
 % f=figure(21);

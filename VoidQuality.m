@@ -84,22 +84,22 @@ dp = p1-p3;
 rhoH = ((dp)*6894.76)/(9.81*1.4478); %Calculates homogeneous density using Pstatic = rho_Homo*g*H*sin(theta)
 
 voidfraction = (rhoH-density_liq)/(density_vap-density_liq);
-plot(x1,avgalpha);
-hold on
-plot(x1,avgalpha_stomma);
-plot(x1,voidfraction)
-grid on
-ylabel('Void Fraction [\alpha]')
-xlabel('Power [Watts]')
-legend('Method 1 - Thermo. Eq.','Method 2 - Stomma','Method 3 - Pressure Drop','Location','SouthEast')
-axes3=gca;
-set(axes3,'FontName','Times New Roman','FontSize',28,'Layer','top','LineWidth',3);
-grid on
-set(findall(gca, 'Type', 'Line'),'LineWidth',5);
-xlim([1000 3000])
-g=gcf;
-g.Position=[515 393 805 595];
-
+% plot(x1,avgalpha);
+% hold on
+% plot(x1,avgalpha_stomma);
+% plot(x1,voidfraction)
+% grid on
+% ylabel('Void Fraction [\alpha]')
+% xlabel('Power [Watts]')
+% legend('Method 1 - Thermo. Eq.','Method 2 - Stomma','Method 3 - Pressure Drop','Location','SouthEast')
+% axes3=gca;
+% set(axes3,'FontName','Times New Roman','FontSize',28,'Layer','top','LineWidth',3);
+% grid on
+% set(findall(gca, 'Type', 'Line'),'LineWidth',5);
+% xlim([1000 3000])
+% g=gcf;
+% g.Position=[515 393 805 595];
+% 
 channeldiameter = 0.0254; %m
 channelarea = pi*(channeldiameter/2)^2;
 massflux = (m/1000)/channelarea;
